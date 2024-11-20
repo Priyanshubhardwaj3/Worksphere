@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1>Welcome to WorkSphere</h1>
+    <p>Your all-in-one employee management system.</p>
+    {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Go to Dashboard</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    {% endif %}
+</div>
+{% endblock %}

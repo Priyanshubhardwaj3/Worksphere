@@ -1,0 +1,28 @@
+
+{% endblock %}
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Employee Dashboard</h2>
+
+<h3>Your Attendance:</h3>
+<ul>
+    {% for record in attendance %}
+    <li>{{ record.date }}: {{ record.status }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Your Salary:</h3>
+<ul>
+    {% for record in salary %}
+    <li>{{ record.payment_date }}: ₹{{ record.net_salary }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Upcoming Holidays:</h3>
+<ul>
+    {% for holiday in holidays %}
+    <li>{{ holiday.date }}: {{ holiday.reason }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
