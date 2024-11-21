@@ -72,6 +72,17 @@ TEMPLATES = [
     },
 ]
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load environment variables from .env file
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG') == 'True'  # Convert to boolean
+DATABASE_URL = os.getenv('DATABASE_URL')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split()
+
+# Other settings...
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
