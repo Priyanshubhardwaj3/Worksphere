@@ -71,18 +71,28 @@ TEMPLATES = [
         },
     },
 ]
-
-# settings.py
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
-load_dotenv()  # Load environment variables from .env file
+# Load the environment variables
+load_dotenv()
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')
+# SECRET_KEY
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+# DEBUG
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+# DATABASE
 DATABASE_URL = os.getenv('DATABASE_URL')
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+# DATABASE CONFIGURATION
+import dj_database_url
+DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL)
+}
+
+
 
 
 
