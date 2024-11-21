@@ -11,26 +11,25 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+import dj_database_url
+
+# Load environment variables from the .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ie9f))o&jf#b(o+cng7rf$m4njklx0y0ys9d5ccyyg79k&)9$!'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
+    'core',  # Your custom app
 ]
 
 MIDDLEWARE = [
@@ -53,13 +52,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'WorkSphere.urls'
 
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Templates configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],  # Include the global templates directory if it exists
+        'DIRS': [BASE_DIR / 'templates'],  # Include the global templates directory if it exists
         'APP_DIRS': True,  # Enable app-level template discovery
         'OPTIONS': {
             'context_processors': [
@@ -71,57 +68,16 @@ TEMPLATES = [
         },
     },
 ]
-import os
-from dotenv import load_dotenv
 
-# Load the environment variables
-load_dotenv()
+WSGI_APPLICATION = 'WorkSphere.wsgi.application'
 
-# SECRET_KEY
-SECRET_KEY = os.getenv('SECRET_KEY')
-
-# DEBUG
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-
-# DATABASE
+# Database configuration for PostgreSQL using DATABASE_URL from environment variable
 DATABASE_URL = os.getenv('DATABASE_URL')
-
-# DATABASE CONFIGURATION
-import dj_database_url
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL)
 }
 
-
-
-
-
-
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'  # Redirect to login if not authenticate
-
-
-
-
-
-WSGI_APPLICATION = 'WorkSphere.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -137,38 +93,36 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
+# Media files (uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@example.com'
-EMAIL_HOST_PASSWORD = 'your-email-password'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  # From environment
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # From environment
+
+# Login redirection URLs
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'  # Redirect to login if not authenticated
+
+# Function to send salary update email
 from django.core.mail import send_mail
 
 def notify_salary(employee, salary_details):
